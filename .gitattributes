@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.f    text eol=lf
+*.f90  text eol=lf
+*.dat  text eol=lf
+verify.sh text eol=lf
