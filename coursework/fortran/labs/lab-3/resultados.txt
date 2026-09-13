@@ -1,0 +1,3 @@
+ elemento            1 ,            1 :    36.100071    
+ elemento            2 ,            2 :    39.676327    
+ elemento            3 ,            3 :    8.5902958    

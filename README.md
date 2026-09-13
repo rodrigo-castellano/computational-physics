@@ -94,20 +94,17 @@ mkdir -p out/sistemasolar && cd out/sistemasolar && ../../bin/sistemasolar
 
 ## Also in this repository
 
-`coursework/` collects the other programming work from the degree:
+`coursework/` holds the other programming work from the degree — C++, Fortran
+and two optics laboratory notebooks. All 47 programs compile and run:
 
-| | | |
-|---|---|---|
-| `programacion/` | 163 | C++ — textbook chapters, lab guiones, a travelling-salesman project |
-| `metodos-numericos/` | 107 | Fortran — Métodos Numéricos y Simulación, exercises and lab practicals |
-| `matlab/` | 85 | MATLAB problem sets and exam scripts |
-| `optica/` | 12 | Optics II laboratory notebooks, signal transmission |
-| `geofisica/` | 4 | Geophysics practical, seismic station data |
+```sh
+cd coursework && ./build.sh
+```
 
-These are coursework rather than simulations and are not built by `make`.
+See [`coursework/README.md`](coursework/README.md).
 
 ```
 src/         the four simulations
-coursework/  the rest of the degree's programming
+coursework/  C++, Fortran and optics lab notebooks
 verify.sh    build, run and check against known physics
 ```
