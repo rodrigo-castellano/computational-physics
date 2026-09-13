@@ -1,0 +1,136 @@
+      PROGRAM NAVE
+
+      IMPLICIT NONE
+      INTEGER I, J, N, IEXP
+      REAL*8 H, T, Y, RT, G, W, DTL, mL, MT, CH, HAMILTONIANO
+      REAL*8 THETA, DELTA, MU, PI, CHEQUEO, VESCAPE
+
+      PARAMETER (N=4)
+
+      DIMENSION Y(N)
+
+      PI=ACOS(-1.0)
+
+
+      G=6.67E-11
+      MT=5.9736E24
+      ML=0.07349E24
+      DTL=3.844E8
+      W=2.6617E-6
+      RT=6.378160E6
+
+      !V inicial
+      VESCAPE=SQRT(2*G*MT/RT)/1.002
+      THETA=PI/6.0
+
+      DELTA=G*MT/(DTL**3)
+      MU=ML/MT
+
+      !Fijo H
+
+      H=5
+
+      !Condiciones iniciales
+
+      Y(1)=RT/DTL
+      Y(2)=PI/6.0
+      Y(3)=(VESCAPE/DTL)*COS(THETA-Y(2))
+      Y(4)=Y(1)*(VESCAPE/DTL)*SIN(THETA-Y(2))
+
+
+
+      OPEN(9,FILE='posicion.txt')
+      !OPEN(11,FILE='k.txt')
+      !OPEN(12,FILE='f.txt')
+      OPEN(19, FILE='ch.txt')
+      !Empieza el ciclo de iteraciones
+      T=0.0
+      DO IEXP=1, 1000000
+
+      CALL RK(H, T, Y, DELTA, MU, W, N)
+
+      T=T+H
+
+      !para que no muestre todas las iteraciones
+      if(mod(IEXP,50000).eq.1) then
+      WRITE(*,*) 0.0 , 0.0
+      WRITE(*,*) COS(W*T), SIN(W*T)
+      WRITE(*,*) Y(1)*COS(Y(2)), Y(1)*SIN(Y(2))
+      WRITE(*,*)
+      endif
+      
+      WRITE(9,*) Y(1)*COS(Y(2)), Y(1)*SIN(Y(2))
+
+      HAMILTONIANO=CH(T, Y, DELTA, MU, W, N)
+
+      WRITE(19,*) T, HAMILTONIANO
+
+      !Vuelta a (2)
+
+
+      END DO
+      CLOSE(9)
+      !CLOSE(11)
+      !CLOSE(12)
+      CLOSE(19)
+
+      STOP
+      END
+
+      SUBROUTINE FUNCIONES(T, Y, F, DELTA, MU, W, N)
+      INTEGER N
+      REAL*8 T, Y, F, AUX1, AUX2, W, DELTA, MU
+
+      DIMENSION Y(N), F(N)
+
+      F(1)=Y(3)
+      F(2)=Y(4)/(Y(1)*Y(1))
+      AUX1=SQRT(1+Y(1)*Y(1)-2.0*Y(1)*COS(Y(2)-W*T))
+      AUX2=1/(Y(1)*Y(1))+(MU*(Y(1)-COS(Y(2)-W*T)))/(AUX1**3)
+      F(3)=(Y(4)*Y(4))/(Y(1)**3)-DELTA*AUX2
+      F(4)=(-1.0*DELTA*MU*Y(1)*SIN(Y(2)-W*T))/(AUX1**3)
+
+
+      RETURN
+      END
+
+      SUBROUTINE RK(H, T, Y, DELTA, MU, W, N)
+      INTEGER N
+      REAL*8 HMEDIOS, H, T, Y, YAUX, K1, K2, K3, K4, DELTA, MU, W
+
+      DIMENSION Y(N), YAUX(N), K1(N), K2(N), K3(N), K4(N)
+
+      HMEDIOS=H/2.0
+
+      CALL FUNCIONES(T, Y, K1, DELTA, MU, W, N)
+      YAUX=Y+H*K1/2.0
+
+      CALL FUNCIONES(T+HMEDIOS, YAUX, K2, DELTA, MU, W, N)
+      YAUX=Y+H*K2/2.0
+
+      CALL FUNCIONES(T+HMEDIOS, YAUX, K3, DELTA, MU, W, N)
+      YAUX=Y+H*K3
+
+      CALL FUNCIONES(T+H, YAUX, K4, DELTA, MU, W, N)
+      Y=Y+H*(K1+2*K2+2*K3+K4)/6.0
+
+      RETURN
+      END
+
+      REAL*8 FUNCTION CH(T, Y, DELTA, MU, W, N)
+      INTEGER N
+      REAL*8 Y, RL, W, T, DELTA, MU
+
+      DIMENSION Y(N)
+
+
+      RL=SQRT(1+Y(1)*Y(1)-2.0*Y(1)*COS(Y(2)-W*T))
+
+      CH=(Y(3)*Y(3))/2.0 + (Y(4)*Y(4))/(2.0*Y(1)*Y(1)) - DELTA/Y(1) - (DELTA*MU)/RL - W*Y(4)
+
+      RETURN
+      END
+
+
+
+

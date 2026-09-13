@@ -1,0 +1,13 @@
+bin/
+build/
+*.o
+*.mod
+# simulation output -- regenerate by running the programs
+out/
+*.dat
+!data/*.dat
+Datos
+Norma
+Transmision
+*.txt
+!*.md
