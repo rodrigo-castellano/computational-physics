@@ -16,7 +16,7 @@ SRC   := src
 ISING   := ising_v2 ising_v3_observables ising_v4_observables
 TARGETS := $(ISING) ising_v1_standalone sistemasolar velocidades \
            schrodinger_v1 schrodinger_v2 cuanticadef nave_v1 nave_v2 \
-           circulo integral prueba rodrigo
+           circulo integral rodrigo
 
 all: $(addprefix $(BIN)/,$(TARGETS))
 
