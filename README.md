@@ -4,23 +4,20 @@ Numerical simulations of four physical systems, written in Fortran 77 and
 Fortran 90 for the *Física Computacional* course of the Physics BSc at the
 Universidad de Granada.
 
-Each system is kept in the successive versions it was developed through, so
-the progression from a first working integrator to one that measures
-observables is visible in the source.
+Each one is checked against a result known independently of the simulation —
+an exact solution, or the real solar system.
 
 ---
 
-## The simulations
-
-### Ising model — `src/ising/`
+## Ising model — `src/ising/`
 
 A 2D spin lattice evolved by Metropolis Monte Carlo, with a hand-written
-random number generator (`randomnumber.f`). The final version sweeps
-temperature and measures energy, magnetisation and specific heat.
+random number generator. Sweeping temperature gives the energy, magnetisation
+and specific heat of the lattice.
 
-The model undergoes a phase transition, and the simulation finds it without
-being told where it is. Sweeping a 16×16 lattice, the order parameter
-collapses between T = 2.3 and T = 2.5:
+The model has a phase transition, and the simulation locates it without being
+told where it is. On a 16×16 lattice the order parameter collapses between
+T = 2.3 and T = 2.5:
 
 | T | 1.9 | 2.1 | 2.3 | 2.5 | 2.7 | 2.9 |
 |---|---|---|---|---|---|---|
@@ -29,17 +26,17 @@ collapses between T = 2.3 and T = 2.5:
 bracketing the exact Onsager result **T_c = 2 / ln(1 + √2) = 2.269**.
 
 ```sh
-echo 16 | ./bin/ising_v4_observables     # lattice size: 16, 32, 64 or 128
+echo 16 | ./bin/ising        # lattice size: 16, 32, 64 or 128
 ```
 
-### Solar system — `src/solar-system/`
+## Solar system — `src/solar-system/`
 
-A ten-body gravitational integrator: the Sun and nine planets, with only
-Newton's law and the initial positions and velocities. It tracks position,
-velocity, angular momentum and energy, and measures each orbital period by
-timing a full revolution.
+A ten-body gravitational integrator — the Sun and nine planets — given
+nothing but Newton's law and the initial positions and velocities. It tracks
+position, velocity, angular momentum and energy, and measures each orbital
+period by timing a full revolution.
 
-Given nothing but initial conditions, it reproduces the real solar system:
+It reproduces the real solar system:
 
 | planet | computed | actual | | planet | computed | actual |
 |---|---|---|---|---|---|---|
@@ -49,35 +46,27 @@ Given nothing but initial conditions, it reproduces the real solar system:
 | Mars | 1.878 yr | 1.881 | | Neptune | 163.010 yr | 164.8 |
 | | | | | Pluto | 246.807 yr | 248.1 |
 
-Mercury is the one outlier — it is the fastest and most eccentric planet, and
-the fixed timestep undersamples its perihelion passage. Everything else lands
-within about 1%.
+Mercury is the one outlier: it is the fastest and most eccentric planet, and
+a fixed timestep undersamples its perihelion passage. The rest land within
+about 1%.
 
-`velocidades` computes the perihelion speeds, accurate to 0.2%: Earth
-30 281 m/s against an actual 30 290, Jupiter 13 703 against 13 720.
+`velocidades` computes perihelion speeds to within 0.2% — Earth 30 281 m/s
+against an actual 30 290, Jupiter 13 703 against 13 720.
 
-### Schrödinger equation — `src/schrodinger/`
+## Schrödinger equation — `src/schrodinger/`
 
 The one-dimensional time-dependent Schrödinger equation for a wave packet
 meeting a potential barrier, integrated with a Crank–Nicolson scheme.
 
-The scheme is unitary, so the norm of the wavefunction is a conserved
-quantity and a direct check on the integration: it drifts by **4 × 10⁻¹³**
-over 2800 timesteps.
+The scheme is unitary, so the norm of the wavefunction is conserved and its
+drift measures the quality of the integration directly. Over 2800 timesteps
+it drifts by **4 × 10⁻¹³**.
 
-### Spacecraft trajectory — `src/rocket/`
+## Spacecraft trajectory — `src/rocket/`
 
 An Earth-to-Moon trajectory integrated in the frame co-rotating with the
-Moon, using a Hamiltonian formulation in scaled units. The Hamiltonian is
-conserved, which makes its drift a measure of integration quality:
-
-| timestep | Hamiltonian drift |
-|---|---|
-| h = 25 | 1.5 × 10⁻⁵ |
-| h = 5 | 3.0 × 10⁻⁸ |
-
-A five-fold smaller step gives roughly 500× better conservation — the
-fourth-order convergence the method should show.
+Moon, using a Hamiltonian formulation in scaled units. The Hamiltonian is a
+constant of the motion; over a million steps it drifts by **3 × 10⁻⁸**.
 
 ---
 
@@ -87,34 +76,25 @@ Requires `gfortran` and `make`. The Fortran 77 sources need `-std=legacy`,
 which the Makefile applies.
 
 ```sh
-make          # builds 14 executables into bin/
-./verify.sh   # builds, runs everything, checks the results against known physics
+make          # builds five executables into bin/
+./verify.sh   # builds, runs everything, checks the results above
 ```
 
-`verify.sh` is the quickest way to see the repository work: it runs all
-fourteen programs and asserts the results above — the Onsager temperature,
-the orbital periods, norm conservation, Hamiltonian convergence.
+`verify.sh` is the quickest way to see the repository work: it runs every
+simulation and asserts the Onsager temperature, the nine orbital periods and
+perihelion speeds, norm conservation and Hamiltonian conservation.
 
-Programs write their output into the working directory, so give each its own:
+Each program writes its output into the working directory, so give it one:
 
 ```sh
 mkdir -p out/sistemasolar && cd out/sistemasolar && ../../bin/sistemasolar
-```
-
-A few read a parameter from standard input:
-
-```sh
-echo 2.0 | ./bin/ising_v1_standalone    # temperature
-echo 16  | ./bin/ising_v4_observables   # lattice size
-echo 2.0 | ./bin/circulo                # radius
 ```
 
 ---
 
 ## Also in this repository
 
-`coursework/` collects the other programming work from the degree — 371 files
-of C++, Fortran, MATLAB and lab notebooks:
+`coursework/` collects the other programming work from the degree:
 
 | | | |
 |---|---|---|
@@ -126,14 +106,8 @@ of C++, Fortran, MATLAB and lab notebooks:
 
 These are coursework rather than simulations and are not built by `make`.
 
-`drafts/` keeps earlier versions that were superseded or left unfinished.
-They are not built, and are there because the intermediate steps are part of
-the record.
-
 ```
 src/         the four simulations
 coursework/  the rest of the degree's programming
-data/        input files read by programs in src/
-drafts/      superseded and unfinished versions
 verify.sh    build, run and check against known physics
 ```
