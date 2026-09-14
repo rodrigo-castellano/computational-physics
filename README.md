@@ -86,6 +86,10 @@ perihelion speeds, norm conservation and Hamiltonian conservation.
 
 Each program writes its output into the working directory, so give it one:
 
+`sistemasolar.cpp` is a later reimplementation of the same integrator in
+C++, kept alongside the Fortran original. It adds a flag per body so a planet
+can be removed from the simulation, and builds as `bin/sistemasolar-cpp`.
+
 ```sh
 mkdir -p out/sistemasolar && cd out/sistemasolar && ../../bin/sistemasolar
 ```

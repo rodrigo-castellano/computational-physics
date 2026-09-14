@@ -5,6 +5,8 @@
 # rejects by default.
 
 FC     := gfortran
+CXX    := g++
+CXXFLAGS := -O2 -Wall
 FFLAGS := -O2 -std=legacy -Wall -Wno-unused-variable -Wno-unused-dummy-argument
 F77    := $(FFLAGS) -ffixed-form
 F90    := $(FFLAGS) -ffree-form
@@ -13,7 +15,7 @@ BIN   := bin
 BUILD := build
 SRC   := src
 
-TARGETS := ising sistemasolar velocidades schrodinger nave
+TARGETS := ising sistemasolar sistemasolar-cpp velocidades schrodinger nave
 
 all: $(addprefix $(BIN)/,$(TARGETS))
 
@@ -26,6 +28,9 @@ $(BUILD)/randomnumber.o: $(SRC)/ising/randomnumber.f | $(BUILD)
 
 $(BIN)/ising: $(SRC)/ising/ising.f $(BUILD)/randomnumber.o | $(BIN)
 	$(FC) $(F77) -I$(BUILD) -J$(BUILD) $^ -o $@
+
+$(BIN)/sistemasolar-cpp: $(SRC)/solar-system/sistemasolar.cpp | $(BIN)
+	$(CXX) $(CXXFLAGS) $< -o $@
 
 $(BIN)/%: $(SRC)/solar-system/%.f | $(BIN)
 	$(FC) $(F77) -J$(BUILD) $< -o $@
