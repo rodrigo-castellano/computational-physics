@@ -29,6 +29,10 @@ bracketing the exact Onsager result **T_c = 2 / ln(1 + √2) = 2.269**.
 echo 16 | ./bin/ising        # lattice size: 16, 32, 64 or 128
 ```
 
+Each simulation folder carries the `assignment.pdf` it was written against —
+the course's own briefs, which set out the physics and the numerical method
+before stating what to implement. They are the lecturer's material, not mine.
+
 ## Solar system — `src/solar-system/`
 
 A ten-body gravitational integrator — the Sun and nine planets — given
